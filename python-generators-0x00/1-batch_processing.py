@@ -7,7 +7,10 @@ def stream_users_in_batches(batch_size):
     cursor.execute("SELECT user_id, name, email, age FROM user_data")
     
     batch = []
-    for row in cursor:
+    while True:
+        row = cursor.fetchone()
+        if row is None:
+            break
         batch.append(row)
         if len(batch) == batch_size:
             yield batch
