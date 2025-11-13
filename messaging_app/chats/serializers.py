@@ -5,6 +5,20 @@ from .models import User, Conversation, Message
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for User model."""
+        
+    # Additional fields for validation demonstration
+    full_name = serializers.SerializerMethodField()
+    display_role = serializers.CharField(source='get_role_display', read_only=True)
+    
+    def get_full_name(self, obj):
+        """Return the full name of the user."""
+        return f"{obj.first_name} {obj.last_name}".strip()
+    
+    def validate_email(self, value):
+        """Custom email validation."""
+        if not value or '@' not in value:
+            raise serializers.ValidationError("Please provide a valid email address.")
+        return value.lower()
     
     class Meta:
         model = User
